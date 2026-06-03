@@ -7,13 +7,11 @@ from pydantic import BaseModel
 app = FastAPI(title="Async Part Number Processor")
 
 
-# 1. Схема для одного объекта из вашего JSON
 class PartItem(BaseModel):
     id: int
     partNumber: str
 
 
-# 2. Асинхронная функция обработки списка элементов
 async def fetch_parts_data(parts: List[PartItem]) -> List[Dict[str, Any]]:
     async with httpx.AsyncClient() as client:
 
@@ -59,10 +57,8 @@ async def fetch_parts_data(parts: List[PartItem]) -> List[Dict[str, Any]]:
         return aggregated_results
 
 
-# 3. Эндпоинт POST, принимающий список JSON [ {...}, {...} ]
 @app.post("/process-parts")
-async def process_parts(payload: List[PartItem]):  # <-- Здесь FastAPI ожидает список
-    # Передаем список в функцию и ждем результат
+async def process_parts(payload: List[PartItem]):
     result = await fetch_parts_data(payload)
     return result
 
