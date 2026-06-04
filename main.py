@@ -3,6 +3,7 @@ from typing import Dict, Any, List
 from fastapi import FastAPI
 import httpx
 from pydantic import BaseModel
+from datetime import datetime
 
 app = FastAPI(title="Async Part Number Processor")
 
@@ -49,11 +50,14 @@ async def fetch_parts_data(parts: List[PartItem]) -> List[Dict[str, Any]]:
                         'photo': _json.get('galleryModel').get('imgUrls'),
                     }
                     result_data["success"] = True
+
+                    with open('data/data.txt', 'a') as f:
+                        f.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                        f.write(" partNumber: {0}, id: {1},\n".format(_json.get('partNumber'), _json.get('manufacturerId')))
+
                 except Exception:
                     result_data["error"] = f"text_response: {response.text}"
-
             aggregated_results.append(result_data)
-
         return aggregated_results
 
 
