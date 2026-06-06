@@ -1,13 +1,15 @@
 import asyncio
+import os
 from typing import Dict, Any, List
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import PlainTextResponse
 import httpx
 from pydantic import BaseModel
 from datetime import datetime
 
 app = FastAPI(title="Async Part Number Processor")
-
+API_TOKEN = os.getenv("API_TOKEN")
+print(f'API_TOKEN: {API_TOKEN}')
 
 class PartItem(BaseModel):
     id: int
@@ -63,7 +65,12 @@ async def fetch_parts_data(parts: List[PartItem]) -> List[Dict[str, Any]]:
 
 
 @app.post("/process-parts")
-async def process_parts(payload: List[PartItem]):
+async def process_parts(request: Request, payload: List[PartItem]):
+
+    authorization = request.headers.get("authorization")
+    if authorization != f'Bearer {API_TOKEN}':
+        raise HTTPException(status_code=401, detail="Invalid or missing Token")
+
     result = await fetch_parts_data(payload)
     return result
 
