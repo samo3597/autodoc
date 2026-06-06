@@ -1,6 +1,7 @@
 import asyncio
 from typing import Dict, Any, List
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 import httpx
 from pydantic import BaseModel
 from datetime import datetime
@@ -69,6 +70,12 @@ async def process_parts(payload: List[PartItem]):
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+@app.get("/data", response_class=PlainTextResponse)
+async def data():
+    with (open("data/data.txt", 'r') as f):
+        text = f.read()
+        return text
 
 if __name__ == "__main__":
     import uvicorn
