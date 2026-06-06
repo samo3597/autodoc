@@ -75,6 +75,7 @@ async def root():
 async def data():
     with (open("data/data.txt", 'r') as f):
         text = f.read()
+        text = f'Տողերի քանակ։ {len(text.splitlines())}\n' + text
         return text
 
 if __name__ == "__main__":
