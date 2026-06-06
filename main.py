@@ -80,9 +80,9 @@ async def root():
 
 @app.get("/data", response_class=PlainTextResponse)
 async def data(request: Request):
-    authorization = request.headers.get("authorization")
-    if authorization != f'Bearer {API_TOKEN}':
-        raise HTTPException(status_code=401, detail="Invalid or missing Token")
+    # authorization = request.headers.get("authorization")
+    # if authorization != f'Bearer {API_TOKEN}':
+    #     raise HTTPException(status_code=401, detail="Invalid or missing Token")
 
     with (open("data/data.txt", 'r') as f):
         text = f.read()
