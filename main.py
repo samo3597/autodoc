@@ -79,7 +79,11 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/data", response_class=PlainTextResponse)
-async def data():
+async def data(request: Request):
+    authorization = request.headers.get("authorization")
+    if authorization != f'Bearer {API_TOKEN}':
+        raise HTTPException(status_code=401, detail="Invalid or missing Token")
+
     with (open("data/data.txt", 'r') as f):
         text = f.read()
         text = f'Տողերի քանակ։ {len(text.splitlines())}\n' + text
